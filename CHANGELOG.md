@@ -11,6 +11,14 @@ package versions it contains. Packages are not tagged on their own.
 ## [Unreleased]
 
 ### Changed
+- License: all four student contributors (Yajushi Khurana, Umang Pandey, Manya Natakala,
+  Evangeline Gulea) confirmed by email that their contributions are MIT-licensed. The
+  README contributor table now reads affirmed, `LICENSE` names "the SlicePoint
+  contributors" alongside Asher Informatics PBC, and ADR 0001 open question 1 is resolved.
+
+### Added
+- The team's hackathon pitch deck (ScottyPanthers, led by Manya Natakala and Evangeline
+  Gulea) in `nucleate-hack-2026/docs/`.
 - CI tests Python 3.12 on pushes and pull requests; Python 3.10 runs only on a manual run
   until the known 3.10 discrepancy is fixed (it showed as a failed check on every PR).
 

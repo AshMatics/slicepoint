@@ -57,21 +57,21 @@ The code is released under the [MIT License](LICENSE). The datasets keep their o
 license (CC BY 4.0, from TotalSegmentator); see [DATASETS.md](DATASETS.md).
 
 SlicePoint started as a student project. Under the hackathon terms each contributor owns
-their work, so each is asked to confirm in writing that their contributions are licensed
-under MIT (ADR 0001, open question 1). Until every row below reads "affirmed", the license
-of the work listed in that row is pending.
+their work and keeps the copyright in it. Every contributor below has confirmed in writing
+(by email, November 2026) that their contributions are licensed under the MIT License, which
+closes ADR 0001, open question 1. Each contributor's copyright notice is covered by the
+"SlicePoint contributors" line in [LICENSE](LICENSE).
 
 | Contributor | Contributed | MIT affirmed |
 |---|---|---|
-| Yajushi Khurana (PhD student, Carnegie Mellon University and University of Pittsburgh) | The original proof of concept: notebooks and monitoring scripts in `slicepoint/python_notebooks/` | Pending |
-| Umang Pandey (graduate student, Bioengineering, Carnegie Mellon University) | The aorta segmentation and comparison service in `slicepoint/segmentation/` | Pending |
-| Manya Natakala (University of Pittsburgh) | The hackathon design and presentation | Pending |
-| Evangeline Gulea (University of Pittsburgh) | The hackathon design and presentation | Pending |
+| Yajushi Khurana (PhD student, Carnegie Mellon University and University of Pittsburgh) | The original proof of concept: notebooks and monitoring scripts in `slicepoint/python_notebooks/` | Yes (email, Nov 2026) |
+| Umang Pandey (graduate student, Bioengineering, Carnegie Mellon University) | The aorta segmentation and comparison service in `slicepoint/segmentation/` | Yes (email, Nov 2026) |
+| Manya Natakala (University of Pittsburgh) | The hackathon design; led the presentation and pitch | Yes (email, Nov 2026) |
+| Evangeline Gulea (University of Pittsburgh) | The hackathon design; led the presentation and pitch | Yes (email, Nov 2026) |
 | Asher Informatics PBC (John Kalafut, with AI assistance) | The rebuild: schemas, core, API, viewer, datasets, documentation | Yes (copyright holder) |
 
-To affirm, a contributor sends Asher Informatics (or posts on the repository's license issue) this sentence:
-*"I agree that my contributions to SlicePoint (github.com/AshMatics/slicepoint) are licensed
-under the MIT License."*
+The team's hackathon pitch deck (team ScottyPanthers) is in
+[`nucleate-hack-2026/docs/`](<nucleate-hack-2026/docs/ScottyPanthers — SlicePoint Medical AI Checker.pdf>).
 
 **Not for clinical use.** SlicePoint supports a decision; it is not a medical device and
 its outputs are not medical advice.

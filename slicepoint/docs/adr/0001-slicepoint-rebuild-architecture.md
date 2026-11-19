@@ -217,7 +217,7 @@ static viewer already cover that need.
 
 | # | Question | Owner | Status |
 |---|---|---|---|
-| 1 | **Contributor licence grant.** The repo `LICENSE` is MIT, but the copyright line is Asher Informatics PBC. Under Nucleate terms the student team owns its IP, so the team must explicitly agree in writing that its contributions are licensed MIT. A one-line written grant or a DCO sign-off both work. | Dr. Kalafut, with the team | **Blocks** code landing near FORGE |
+| 1 | **Contributor licence grant.** The repo `LICENSE` is MIT, but the copyright line is Asher Informatics PBC. Under Nucleate terms the student team owns its IP, so the team must explicitly agree in writing that its contributions are licensed MIT. A one-line written grant or a DCO sign-off both work. | Dr. Kalafut, with the team | **Resolved** (November 2026): all four students affirmed MIT in writing by email; see the root README |
 | 2 | **Score formulas.** See below. | Dr. Kalafut to ratify | Provisional v0 proposed |
 | 3 | **`<hospital>_dice.json`.** No writer exists in the repo. The segmentation notebook that produced it was never committed, so its contract is inferred. | Ask the team | Open |
 | 4 | **Reference distributions.** Where they come from per model, and who signs them. This is a required step: without them every check compares a site against itself. PGM-synthesized populations (§5) are a fallback, not a substitute. | Open | Needed before any real GO |
