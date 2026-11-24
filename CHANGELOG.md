@@ -15,6 +15,10 @@ package versions it contains. Packages are not tagged on their own.
   Evangeline Gulea) confirmed by email that their contributions are MIT-licensed. The
   README contributor table now reads affirmed, `LICENSE` names "the SlicePoint
   contributors" alongside Asher Informatics PBC, and ADR 0001 open question 1 is resolved.
+- README: a "New since 0.2.0" section lists the `planning`, `roc` and `fairness` modules, and
+  "Checking against R" says how their results are checked against R `presize` and `pROC`
+  (stored results, so CI needs no R; `build_proc_reference.py` rebuilds the pROC fixture from
+  an OpenCPU server). The "last updated" date is now 2026-11-24.
 
 ### Added
 - `slicepoint_core.planning`: study planning before a model is run. Expected confidence-interval

@@ -19,7 +19,8 @@ model is abdominal aortic aneurysm (AAA) detection on CT; the checks are not spe
 SlicePoint began as the runner-up project at the 2026 Nucleate Pittsburgh hackathon and is
 being rebuilt here as open source by Asher Informatics PBC with the student team.
 
-**Version 0.2.0** (last updated 2026-11-12); see [CHANGELOG.md](CHANGELOG.md).
+**Version 0.2.0** (last updated 2026-11-24); unreleased changes since 0.2.0 are listed below and
+in [CHANGELOG.md](CHANGELOG.md).
 
 **Start here:** [slicepoint/README.md](slicepoint/README.md) has the quick start (install,
 run one assessment, open the report), the package map and how to run the service with
@@ -40,6 +41,30 @@ its web UI.
 | [`slicepoint/python_notebooks/`](slicepoint/python_notebooks) | The student team's original proof of concept, kept as written |
 | [`data/`](data) | Where sample data goes (not in git); [data/README.md](data/README.md) says how to download it |
 | [`nucleate-hack-2026/`](nucleate-hack-2026) | The hackathon material: brief, documents, starter and federated harness |
+
+## New since 0.2.0 (unreleased)
+
+Three statistics modules in `slicepoint-core`. Each is a set of pure functions with no new
+dependencies. None is used yet by the assessment, the command line or the API.
+
+| Module | What it does |
+|---|---|
+| `slicepoint_core.planning` | Study planning before a model is run: expected confidence-interval width and sample size for AUC, sensitivity, specificity or any rate; stratified allocation of cases |
+| `slicepoint_core.roc` | AUC with DeLong intervals, DeLong tests (two models on the same cases, or two separate groups), and bootstrap intervals that resample people rather than images |
+| `slicepoint_core.fairness` | Performance by subgroup and the gaps between subgroups, with small groups flagged and intervals adjusted for multiple comparisons |
+
+### Checking against R
+
+The statistics in `planning` and `roc` reproduce the standard R packages:
+[presize](https://cran.r-project.org/package=presize) for planning and
+[pROC](https://cran.r-project.org/package=pROC) 1.19.1 for ROC. The R results are stored in
+the tests (`slicepoint/core/tests/test_planning.py` and
+`slicepoint/core/tests/fixtures/proc_reference.json`), so the tests and CI need no R.
+
+`slicepoint/core/tests/fixtures/build_proc_reference.py` rebuilds the pROC fixture from any
+[OpenCPU](https://www.opencpu.org/) server that has pROC installed (set `OPENCPU_URL`). It sends
+only seeded synthetic data. Asher Informatics maintainers also cross-check new cases against an
+internal OpenCPU service that wraps presize, pROC and kappaSize, before adding them as fixtures.
 
 ## Datasets
 
