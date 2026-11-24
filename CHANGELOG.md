@@ -17,6 +17,12 @@ package versions it contains. Packages are not tagged on their own.
   contributors" alongside Asher Informatics PBC, and ADR 0001 open question 1 is resolved.
 
 ### Added
+- `slicepoint_core.planning`: study planning before a model is run. Expected confidence-interval
+  width and sample size for AUC (Hanley-McNeil; reproduces R `presize::prec_auc`) and for
+  sensitivity, specificity or any rate (Wilson); stratified allocation over joint strata with
+  totals preserved; the plan beside the cases available; pooling of under-filled levels. Pure
+  functions with no new dependencies, not yet used by `Assessment`, the CLI or the API. Ported and
+  generalized from the AI-Assess prototype (Asher Informatics).
 - The team's hackathon pitch deck (ScottyPanthers, led by Manya Natakala and Evangeline
   Gulea) in `nucleate-hack-2026/docs/`.
 - CI tests Python 3.12 on pushes and pull requests; Python 3.10 runs only on a manual run
