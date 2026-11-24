@@ -64,7 +64,8 @@ the tests (`slicepoint/core/tests/test_planning.py` and
 `slicepoint/core/tests/fixtures/build_proc_reference.py` rebuilds the pROC fixture from any
 [OpenCPU](https://www.opencpu.org/) server that has pROC installed (set `OPENCPU_URL`). It sends
 only seeded synthetic data. Asher Informatics maintainers also cross-check new cases against an
-internal OpenCPU service that wraps presize, pROC and kappaSize, before adding them as fixtures.
+internal OpenCPU service that wraps presize, pROC and kappaSize, before adding them as fixtures. For
+details on that service, contact Asher Informatics.
 
 ## Datasets
 
