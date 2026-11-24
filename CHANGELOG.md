@@ -27,8 +27,10 @@ package versions it contains. Packages are not tagged on their own.
   models on the same cases and for two separate groups of cases, and percentile bootstrap intervals
   for an AUC and for the gap between two subgroups that resample people when a person has several
   images. Pure functions with no new dependencies, not yet used by `Assessment`, the CLI or the API.
-  Checked against scikit-learn, scipy and the DeLong definition; a cross-check against R `pROC` is
-  outstanding.
+  Checked against scikit-learn, scipy, the DeLong definition and R `pROC` 1.19.1 (a stored fixture
+  of synthetic data; the tests need no R). The unpaired test's p-value and interval use a t
+  distribution with Welch-style degrees of freedom, as `pROC` does, so small groups are judged
+  more cautiously than with the normal distribution.
 - The team's hackathon pitch deck (ScottyPanthers, led by Manya Natakala and Evangeline
   Gulea) in `nucleate-hack-2026/docs/`.
 - CI tests Python 3.12 on pushes and pull requests; Python 3.10 runs only on a manual run
