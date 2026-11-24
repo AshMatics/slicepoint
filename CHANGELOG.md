@@ -23,6 +23,14 @@ package versions it contains. Packages are not tagged on their own.
   totals preserved; the plan beside the cases available; pooling of under-filled levels. Pure
   functions with no new dependencies, not yet used by `Assessment`, the CLI or the API. Ported and
   generalized from the AI-Assess prototype (Asher Informatics).
+- `slicepoint_core.fairness`: subgroup performance and fairness gaps on a plain table of cases.
+  `subgroup_metrics` reports AUC, sensitivity, specificity, PPV, NPV and positive rate for each
+  subgroup with an interval; `subgroup_gaps` compares each subgroup with a reference group or with
+  everyone else; `scan` covers several factors and their intersections as one family. Subgroups too
+  small to estimate are flagged instead of estimated, intervals and p-values are adjusted for the
+  number of comparisons, and each gap is judged against a stated margin (within it, beyond it, or
+  inconclusive). When a person has several cases, intervals resample people. Pure functions with no
+  new dependencies, not yet used by `Assessment`, the CLI or the API.
 - `slicepoint_core.roc`: AUC with the DeLong standard error and interval, DeLong tests for two
   models on the same cases and for two separate groups of cases, and percentile bootstrap intervals
   for an AUC and for the gap between two subgroups that resample people when a person has several
