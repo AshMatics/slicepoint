@@ -1,13 +1,18 @@
 """ROC analysis: checked against scikit-learn, scipy, a direct evaluation of the DeLong
 definition, hand values and simulation.
 
-Not yet checked against R ``pROC`` (``ci.auc``, ``roc.test``): no R was available when
-this was written. ``reference_cases`` builds the fixed datasets those fixtures should use.
+The DeLong functions are also checked against R ``pROC`` 1.19.1 (``ci.auc``, ``var``,
+``roc.test``) through ``fixtures/proc_reference.json``, which
+``fixtures/build_proc_reference.py`` rebuilds from an OpenCPU server. The tests read the
+stored file and need no R.
 """
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -352,3 +357,65 @@ def test_delong_needs_two_cases_per_class_and_valid_levels() -> None:
         R.auc_delong([1, 1, 0, 0], [3, 1, 2, 0], conf_level=1.5)
     with pytest.raises(ValueError):
         R.bootstrap_auc([1, 1, 0, 0], [3, 1, 2, 0], n_resamples=10)
+
+
+# --------------------------------------------------------------------------- R pROC
+
+_PROC: dict[str, Any] = json.loads((Path(__file__).parent / "fixtures" / "proc_reference.json").read_text())
+_TOL = 1e-10
+
+
+def _proc_data(name: str) -> tuple[B, F, F]:
+    d = _PROC["datasets"][name]
+    return np.array(d["y"], dtype=bool), np.array(d["score_a"], dtype=float), np.array(d["score_b"], dtype=float)
+
+
+@pytest.mark.parametrize("name", ["continuous", "ties", "small"])
+def test_proc_fixture_score_a_is_the_reference_case(name: str) -> None:
+    y, a, _ = _proc_data(name)
+    ref_y, ref_s = reference_cases()[name]
+    assert (y == ref_y).all()
+    assert a == pytest.approx(ref_s, abs=1e-12)
+
+
+@pytest.mark.parametrize("key", sorted(_PROC["auc_delong"]))
+def test_auc_delong_matches_proc(key: str) -> None:
+    name, which = key.split("/")
+    y, a, b = _proc_data(name)
+    want = _PROC["auc_delong"][key]
+    got = R.auc_delong(y, a if which == "score_a" else b)
+    assert got.se is not None
+    assert got.auc == pytest.approx(want["auc"], abs=_TOL)
+    assert got.se**2 == pytest.approx(want["variance"], abs=_TOL)
+    assert got.lower == pytest.approx(want["lower"], abs=_TOL)
+    assert got.upper == pytest.approx(want["upper"], abs=_TOL)  # "small/score_a" is clipped at 1 by both
+
+
+@pytest.mark.parametrize("name", sorted(_PROC["paired"]))
+def test_compare_paired_matches_proc(name: str) -> None:
+    y, a, b = _proc_data(name)
+    want = _PROC["paired"][name]
+    got = R.compare_paired(y, a, b)
+    assert got.z == pytest.approx(want["statistic"], abs=_TOL)
+    assert got.p_value == pytest.approx(want["p_value"], abs=_TOL)
+    assert (got.lower, got.upper) == pytest.approx(want["conf_int"], abs=_TOL)
+
+
+@pytest.mark.parametrize("key", sorted(_PROC["unpaired"]))
+def test_compare_unpaired_matches_proc(key: str) -> None:
+    """Statistic, Welch-style degrees of freedom and t-distribution p-value. pROC gives no
+    interval for this test; ours uses the same t distribution, so it excludes zero exactly
+    when the p-value is below ``1 - conf_level``."""
+    first, second = key.split("|")
+    ya, sa, _ = _proc_data(first)
+    yb, sb, _ = _proc_data(second)
+    want = _PROC["unpaired"][key]
+    got = R.compare_unpaired(ya, sa, yb, sb)
+    assert got.z is not None and got.p_value is not None and got.df is not None and got.se is not None
+    assert got.z == pytest.approx(want["statistic"], abs=_TOL)
+    assert got.df == pytest.approx(want["df"], abs=1e-8)
+    assert got.p_value == pytest.approx(want["p_value"], abs=_TOL)
+    assert got.p_value > 2.0 * st.norm.sf(abs(got.z))  # more conservative than the normal
+    half = float(st.t.ppf(0.975, got.df)) * got.se
+    assert (got.lower, got.upper) == pytest.approx((got.difference - half, got.difference + half), abs=_TOL)
+    assert (got.lower > 0 or got.upper < 0) == (got.p_value < 0.05)

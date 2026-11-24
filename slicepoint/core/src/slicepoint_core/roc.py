@@ -81,6 +81,10 @@ class AucComparison:
     comparisons and when the estimated variance is zero. A p-value above 0.05 does not
     show that two groups perform the same: read the interval against the smallest
     difference that would matter.
+
+    ``z`` is the test statistic. ``df`` is set when the p-value and interval come from a
+    t distribution with that many degrees of freedom (the unpaired DeLong test); when it
+    is ``None`` they come from the normal distribution.
     """
 
     auc_a: float
@@ -94,6 +98,7 @@ class AucComparison:
     se: float | None = None
     z: float | None = None
     p_value: float | None = None
+    df: float | None = None
     n_resamples_used: int | None = None
 
 
@@ -188,16 +193,22 @@ def auc_delong(y_true: npt.ArrayLike, y_score: npt.ArrayLike, *, conf_level: flo
                        conf_level=conf_level, method="delong", se=se, n_units=m + n)
 
 
-def _comparison(a: float, b: float, var: float, conf_level: float, paired: bool) -> AucComparison:
+def _comparison(
+    a: float, b: float, var: float, conf_level: float, paired: bool, df: float | None = None
+) -> AucComparison:
+    """``df`` switches the reference distribution from the normal to a t with ``df`` degrees of freedom."""
     d = a - b
     se = math.sqrt(max(var, 0.0))
-    half = _z(conf_level) * se
+    normal_quantile = _z(conf_level)  # also validates conf_level
     z = p = None
+    if se <= 0:
+        df = None
+    half = (normal_quantile if df is None else float(st.t.ppf(0.5 + conf_level / 2.0, df))) * se
     if se > 0:
         z = d / se
-        p = float(2.0 * st.norm.sf(abs(z)))
+        p = float(2.0 * (st.norm.sf(abs(z)) if df is None else st.t.sf(abs(z), df)))
     return AucComparison(auc_a=a, auc_b=b, difference=d, lower=d - half, upper=d + half, conf_level=conf_level,
-                         method="delong", paired=paired, se=se, z=z, p_value=p)
+                         method="delong", paired=paired, se=se, z=z, p_value=p, df=df)
 
 
 def compare_paired(
@@ -237,6 +248,12 @@ def compare_unpaired(
     The sets share no cases, so the variance of the difference is the sum of the two
     DeLong variances. Assumes independent cases, within and between the sets: a person
     with images in both sets breaks it (use :func:`bootstrap_gap`).
+
+    The p-value and interval read the statistic against a t distribution with Welch-style
+    degrees of freedom (``df`` on the result), as R ``pROC`` does, rather than the normal
+    distribution. With large sets the two agree; with a small set the t distribution gives
+    a larger p-value and a wider interval, which guards against calling a small subgroup
+    different on too little evidence.
     """
     ya, yb = _labels(y_true_a), _labels(y_true_b)
     sa, sb = _scores(ya, y_score_a, "y_score_a"), _scores(yb, y_score_b, "y_score_b")
@@ -244,7 +261,11 @@ def compare_unpaired(
     _need_both(yb, 2)
     a, a10, a01 = _components(sa[ya], sa[~ya])
     b, b10, b01 = _components(sb[yb], sb[~yb])
-    return _comparison(a, b, _delong_var(a10, a01) + _delong_var(b10, b01), conf_level, paired=False)
+    var_a, var_b = _delong_var(a10, a01), _delong_var(b10, b01)
+    df = None
+    if var_a + var_b > 0:
+        df = (var_a + var_b) ** 2 / (var_a**2 / (len(ya) - 1) + var_b**2 / (len(yb) - 1))
+    return _comparison(a, b, var_a + var_b, conf_level, paired=False, df=df)
 
 
 # --------------------------------------------------------------------------- bootstrap
