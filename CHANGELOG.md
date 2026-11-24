@@ -17,6 +17,18 @@ package versions it contains. Packages are not tagged on their own.
   contributors" alongside Asher Informatics PBC, and ADR 0001 open question 1 is resolved.
 
 ### Added
+- `slicepoint_core.planning`: study planning before a model is run. Expected confidence-interval
+  width and sample size for AUC (Hanley-McNeil; reproduces R `presize::prec_auc`) and for
+  sensitivity, specificity or any rate (Wilson); stratified allocation over joint strata with
+  totals preserved; the plan beside the cases available; pooling of under-filled levels. Pure
+  functions with no new dependencies, not yet used by `Assessment`, the CLI or the API. Ported and
+  generalized from the AI-Assess prototype (Asher Informatics).
+- `slicepoint_core.roc`: AUC with the DeLong standard error and interval, DeLong tests for two
+  models on the same cases and for two separate groups of cases, and percentile bootstrap intervals
+  for an AUC and for the gap between two subgroups that resample people when a person has several
+  images. Pure functions with no new dependencies, not yet used by `Assessment`, the CLI or the API.
+  Checked against scikit-learn, scipy and the DeLong definition; a cross-check against R `pROC` is
+  outstanding.
 - The team's hackathon pitch deck (ScottyPanthers, led by Manya Natakala and Evangeline
   Gulea) in `nucleate-hack-2026/docs/`.
 - CI tests Python 3.12 on pushes and pull requests; Python 3.10 runs only on a manual run
