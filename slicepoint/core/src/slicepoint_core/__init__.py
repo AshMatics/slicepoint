@@ -20,7 +20,7 @@ from __future__ import annotations
 
 __version__ = "0.2.2"
 
-from . import planning, report, stats  # noqa: E402
+from . import planning, report, roc, stats  # noqa: E402
 from .assessment import SELF_COMPARISON_NOTE, Assessment, AssessmentReport, strip_provisional_scores  # noqa: E402
 from .errors import InputError  # noqa: E402
 from .checks import CheckRegistry, CheckSpec, Requirement, default_registry  # noqa: E402
@@ -48,6 +48,7 @@ __all__ = [
     "planning",
     "render_html",
     "report",
+    "roc",
     "stats",
     "strip_provisional_scores",
     "to_slicepoint_v0",
