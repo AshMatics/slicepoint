@@ -21,6 +21,16 @@ package versions it contains. Packages are not tagged on their own.
   an OpenCPU server). The "last updated" date is now 2026-11-24.
 
 ### Added
+- `slicepoint_core.scenario`: build a simulated monitoring scenario from pools of cases. A
+  recipe names a reference set and, per site, phases (a span of months, a pool, cases per
+  month, an optional positive share, sampling weights by factor value, and a group column so
+  repeat scans of one person are drawn together). Draws never reuse a scan (by `source_id`),
+  reserved pools keep their scans out of every other draw, a short pool fails with its counts,
+  and the same seed gives the same scenario. Output is SlicePoint input folders per site and
+  month plus `cases.parquet`, `provenance.parquet` and a `scenario.json` manifest with sha256.
+  `fit_calibration` adds a calibrated probability of a positive from one model score (Platt
+  scaling, fitted on the reference only), which confidence-based performance estimation needs.
+  No new dependencies; not yet used by `Assessment`, the CLI or the API.
 - `slicepoint_core.planning`: study planning before a model is run. Expected confidence-interval
   width and sample size for AUC (Hanley-McNeil; reproduces R `presize::prec_auc`) and for
   sensitivity, specificity or any rate (Wilson); stratified allocation over joint strata with
